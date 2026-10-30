@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Light: warm tour-sheet paper, ink type, stage-light vermilion accent. */
+:root {
+  --paper: #f6f1e8;
+  --paper-raised: #fbf8f2;
+  --paper-sunk: #ede6d9;
+  --ink: #1d1a16;
+  --ink-soft: #4a443b;
+  --ink-faint: #7a7266;
+  --rule: #ddd4c4;
+  --rule-strong: #c4b8a3;
+  --accent: #d9431f;
+  --accent-ink: #ffffff;
+  --accent-soft: #f7dcd2;
+  --good: #2f7a4f;
+  --warn: #a8670f;
+  --shadow: 0 1px 0 rgb(29 26 22 / 0.04), 0 12px 32px -12px rgb(29 26 22 / 0.18);
+  color-scheme: light;
+}
+
+/* Dark: re-picked, not inverted. Warm charcoal stage, brighter accent for contrast. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #15130f;
+    --paper-raised: #1e1b16;
+    --paper-sunk: #0e0c0a;
+    --ink: #f1ebe0;
+    --ink-soft: #c9c0b1;
+    --ink-faint: #8f8676;
+    --rule: #2f2a23;
+    --rule-strong: #463f34;
+    --accent: #ff6a4d;
+    --accent-ink: #1a0d08;
+    --accent-soft: #3a1d14;
+    --good: #6cc890;
+    --warn: #e9a94a;
+    --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.7);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #15130f;
+  --paper-raised: #1e1b16;
+  --paper-sunk: #0e0c0a;
+  --ink: #f1ebe0;
+  --ink-soft: #c9c0b1;
+  --ink-faint: #8f8676;
+  --rule: #2f2a23;
+  --rule-strong: #463f34;
+  --accent: #ff6a4d;
+  --accent-ink: #1a0d08;
+  --accent-soft: #3a1d14;
+  --good: #6cc890;
+  --warn: #e9a94a;
+  --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-bricolage);
+  --font-mono: var(--font-jetbrains);
+  --shadow-card: var(--shadow);
+}
+
+html {
+  background: var(--paper);
+  transition: background-color 0.4s ease;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Faint paper grain, self-made via SVG noise. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes draw {
+  from { stroke-dashoffset: var(--len, 1200); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+@keyframes shimmer {
+  from { background-position: -400px 0; }
+  to { background-position: 400px 0; }
+}
+
+.rise { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.draw { stroke-dasharray: var(--len, 1200); animation: draw 2.4s cubic-bezier(0.6, 0, 0.2, 1) both; }
+.pulse-ring { transform-box: fill-box; transform-origin: center; animation: pulse-ring 2.2s ease-out infinite; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--paper-sunk) 0%, var(--rule) 50%, var(--paper-sunk) 100%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
